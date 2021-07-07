@@ -1,4 +1,4 @@
-// import './sass/main.scss';
+import listOfcountr from '../src/templates/countries-list.hbs';
 import countriesTpl from '../src/templates/template-countries.hbs';
 import API from '../src/js/api-service';
 import getRefs from '../src/js/get-refs';
@@ -17,22 +17,26 @@ function renderCountries(countries) {
   refs.countrContainer.innerHTML = markup;
 }
 
+function renderCountr(countr) {
+  refs.countriesListRef.innerHTML = '';
+  refs.countriesListRef.insertAdjacentHTML('beforeend', listOfcountr(countr));
+}
+
 function onSearch(e) {
   e.preventDefault();
-  API.fetchCountries(refs.inputForm.value).then(processingCountries);
+  API.fetchCountries(refs.inputForm.value).then(processingCountries).catch(onSearchError());
 }
 
 function processingCountries(response) {
   if (response.length === 1) {
     renderCountries(response);
-    alert({ text: 'Такая страна есть !' });
   } else if (response.length >= 10) {
     alert({ text: 'Слишком большой запрос' });
     return;
   } else {
-    onSearchError();
+    renderCountr(response);
   }
-};
+}
 
 function onSearchError(error) {
   alert({
