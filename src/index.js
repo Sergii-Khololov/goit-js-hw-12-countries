@@ -18,13 +18,17 @@ function renderCountries(countries) {
 }
 
 function renderCountr(countr) {
-  refs.countriesListRef.innerHTML = '';
   refs.countriesListRef.insertAdjacentHTML('beforeend', listOfcountr(countr));
 }
 
 function onSearch(e) {
   e.preventDefault();
-  API.fetchCountries(refs.inputForm.value).then(processingCountries).catch(onSearchError());
+
+  refs.countriesListRef.innerHTML = '';
+  refs.countrContainer.innerHTML = '';
+
+  const input = refs.inputForm.value;
+  API.fetchCountries(input).then(processingCountries);
 }
 
 function processingCountries(response) {
@@ -33,6 +37,8 @@ function processingCountries(response) {
   } else if (response.length >= 10) {
     alert({ text: 'Слишком большой запрос' });
     return;
+  } else if (response.status === 404) {
+    onSearchError();
   } else {
     renderCountr(response);
   }
